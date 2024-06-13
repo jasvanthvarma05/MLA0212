@@ -1,0 +1,79 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+# Create a synthetic dataset
+data = {
+    'age': np.random.randint(20, 70, 100),
+    'income': np.random.randint(20000, 100000, 100),
+    'loan_amount': np.random.randint(1000, 50000, 100),
+    'credit_score': np.random.choice(['good', 'average', 'bad'], 100)
+}
+
+# Convert to DataFrame
+df = pd.DataFrame(data)
+
+# Encode 'credit_score' as numerical
+df['credit_score'] = df['credit_score'].map({'good': 2, 'average': 1, 'bad': 0})
+
+# Save to CSV
+df.to_csv('credit_score_dataset.csv', index=False)
+
+# Step 1: Load the Dataset
+df = pd.read_csv('credit_score_dataset.csv')
+
+# Display the first few rows of the dataset
+print(df.head())
+
+# Step 2: Data Preprocessing
+# Handle missing values (if any)
+df = df.dropna()
+
+# Features and target variable
+X = df.drop('credit_score', axis=1)
+y = df['credit_score']
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Step 3: Initialize the Model
+gnb = GaussianNB()
+
+# Step 4: Train the Model
+gnb.fit(X_train, y_train)
+
+# Step 5: Make Predictions
+y_pred = gnb.predict(X_test)
+
+# Step 6: Evaluate the Model
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+conf_matrix = confusion_matrix(y_test, y_pred)
+
+# Print the results
+print(f"Accuracy: {accuracy}")
+print(f"Classification Report:\n{report}")
+print(f"Confusion Matrix:\n{conf_matrix}")
+
+"""
+OUTPUT:
+Accuracy: 0.3
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.29      0.50      0.36         6
+           1       0.33      0.29      0.31         7
+           2       0.25      0.10      0.14         7
+
+    accuracy                           0.30        20
+   macro avg       0.29      0.30      0.27        20
+weighted avg       0.29      0.30      0.27        20
+
+Confusion Matrix:
+[[3 3 0]
+ [3 2 2]
+ [4 2 1]]
+
+"""
