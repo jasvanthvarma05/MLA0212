@@ -1,0 +1,77 @@
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+import numpy as np
+
+# Step 1: Load the Breast Cancer dataset
+cancer = load_breast_cancer()
+X = cancer.data
+y = cancer.target
+
+# Step 2: Preprocess the data
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+y = y.reshape(-1, 1)  # Convert to column vector for binary classification
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+
+# Step 3: Initialize the Neural Network parameters
+input_size = X_train.shape[1]
+hidden_size = 4
+output_size = 1
+learning_rate = 0.1
+epochs = 10000
+
+# Initialize weights and biases
+W1 = np.random.randn(input_size, hidden_size)
+b1 = np.zeros((1, hidden_size))
+W2 = np.random.randn(hidden_size, output_size)
+b2 = np.zeros((1, output_size))
+
+# Sigmoid activation function and its derivative
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def sigmoid_derivative(x):
+    return x * (1 - x)
+
+# Step 4: Train the Neural Network
+for epoch in range(epochs):
+    # Forward Propagation
+    z1 = np.dot(X_train, W1) + b1
+    a1 = sigmoid(z1)
+    z2 = np.dot(a1, W2) + b2
+    a2 = sigmoid(z2)
+    
+    # Calculate the error
+    error = y_train - a2
+    d_output = error * sigmoid_derivative(a2)
+    
+    # Backward Propagation
+    error_hidden = d_output.dot(W2.T)
+    d_hidden = error_hidden * sigmoid_derivative(a1)
+    
+    # Update weights and biases
+    W2 += a1.T.dot(d_output) * learning_rate
+    b2 += np.sum(d_output, axis=0, keepdims=True) * learning_rate
+    W1 += X_train.T.dot(d_hidden) * learning_rate
+    b1 += np.sum(d_hidden, axis=0) * learning_rate
+
+# Step 5: Test the Neural Network
+# Forward pass on the test set
+z1 = np.dot(X_test, W1) + b1
+a1 = sigmoid(z1)
+z2 = np.dot(a1, W2) + b2
+a2 = sigmoid(z2)
+
+# Convert probabilities to binary predictions
+predictions = np.round(a2)
+
+# Calculate accuracy
+accuracy = np.mean(predictions == y_test)
+print(f"Accuracy: {accuracy}")
+"""
+OUTPUT :
+accuracy : 0.9473684210526315
+"""
