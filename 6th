@@ -1,0 +1,83 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Create a synthetic dataset
+data = {
+    'year': np.random.randint(2000, 2021, size=1000),
+    'mileage': np.random.randint(5000, 200000, size=1000),
+    'brand': np.random.choice(['Toyota', 'Ford', 'BMW', 'Audi', 'Mercedes'], size=1000),
+    'model': np.random.choice(['Model1', 'Model2', 'Model3', 'Model4', 'Model5'], size=1000),
+    'fuel_type': np.random.choice(['Petrol', 'Diesel', 'Electric', 'Hybrid'], size=1000),
+    'price': np.random.randint(5000, 50000, size=1000)
+}
+
+# Convert to DataFrame
+df = pd.DataFrame(data)
+
+# Inspect the dataset
+print(df.head())
+
+# Separate features and target variable
+X = df.drop('price', axis=1)
+y = df['price']
+
+# Identify numerical and categorical columns
+num_features = ['year', 'mileage']
+cat_features = ['brand', 'model', 'fuel_type']
+
+# Preprocessing pipeline
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), num_features),
+        ('cat', OneHotEncoder(handle_unknown='ignore'), cat_features)  # Handle unknown categories
+    ])
+
+# Create the pipeline
+model = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('regressor', LinearRegression())
+])
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Fit the model to the training data
+model.fit(X_train, y_train)
+
+# Predict car prices on the testing set
+y_pred = model.predict(X_test)
+
+# Calculate evaluation metrics
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print(f'Mean Squared Error: {mse}')
+print(f'R-squared: {r2}')
+
+# Display a few predictions vs actual prices
+results = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
+print(results.head())
+"""
+OUTPUT:
+
+   year  mileage   brand   model fuel_type  price
+0  2004    66695    Ford  Model5    Diesel  42052
+1  2006    59147     BMW  Model3    Petrol  15948
+2  2018   143983    Audi  Model1    Hybrid  14685
+3  2007   114301     BMW  Model1    Petrol  20308
+4  2020   125477  Toyota  Model4    Hybrid  15589
+Mean Squared Error: 169799169.3880283
+R-squared: -0.039894651393503455
+     Actual     Predicted
+521   17828  29943.246262
+737   24038  26728.408111
+740   32828  26042.909767
+660   25107  27060.381268
+411   23863  28315.174510
+"""
