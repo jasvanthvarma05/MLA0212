@@ -1,0 +1,47 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, classification_report
+
+# Step 1: Load the Dataset
+df = pd.read_csv('student_dataset.csv')
+
+# Step 2: Data Preprocessing
+X = df[['marks', 'total', 'avg']]  # Features
+y = df['pass']  # Target variable
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Step 3: Initialize the Model
+gnb = GaussianNB()
+
+# Step 4: Train the Model
+gnb.fit(X_train, y_train)
+
+# Step 5: Make Predictions
+y_pred = gnb.predict(X_test)
+
+# Step 6: Evaluate the Model
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+
+# Print the results
+print(f"Accuracy: {accuracy}")
+print(f"Classification Report:\n{report}")
+
+"""
+
+OUTPUT:
+
+Accuracy: 1.0
+Classification Report:
+              precision    recall  f1-score   support
+
+          no       1.00      1.00      1.00         1
+         yes       1.00      1.00      1.00         2
+
+    accuracy                           1.00         3
+   macro avg       1.00      1.00      1.00         3
+weighted avg       1.00      1.00      1.00         3
+"""
