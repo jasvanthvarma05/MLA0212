@@ -1,0 +1,66 @@
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.pyplot as plt
+
+# Generate a small synthetic dataset
+np.random.seed(42)
+X = 2 * np.random.rand(100, 1)
+y = 4 + 3 * X + np.random.randn(100, 1)
+
+# Convert to DataFrame
+df = pd.DataFrame(np.hstack((X, y)), columns=['Feature', 'Target'])
+
+# Inspect the dataset
+print(df.head())
+
+# Separate features and target variable
+X = df[['Feature']]
+y = df['Target']
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train the Linear Regression model
+lr = LinearRegression()
+lr.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = lr.predict(X_test)
+
+# Evaluate the model
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print(f'Mean Squared Error: {mse}')
+print(f'R-squared: {r2}')
+
+# Visualize the results
+plt.figure(figsize=(10, 6))
+plt.scatter(X_test, y_test, color='blue', label='Actual')
+plt.plot(X_test, y_pred, color='red', linewidth=2, label='Predicted')
+plt.xlabel('Feature')
+plt.ylabel('Target')
+plt.title('Actual vs Predicted')
+plt.legend()
+plt.show()
+
+# Display model coefficients
+print('Model Coefficients:')
+print(f'Intercept: {lr.intercept_}')
+print(f'Coefficient: {lr.coef_[0]}')
+
+"""
+OUTPUT:
+
+    Feature    Target
+0  0.749080  6.334288
+1  1.901429  9.405278
+2  1.463988  8.483724
+3  1.197317  5.604382
+4  0.312037  4.716440
+Mean Squared Error: 0.6536995137170021
+R-squared: 0.8072059636181392
+"""
