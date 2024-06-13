@@ -1,0 +1,42 @@
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Step 1: Load the Dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Step 2: Data Preprocessing
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Step 3: Initialize the Model
+knn = KNeighborsClassifier(n_neighbors=5)
+
+# Step 4: Train the Model
+knn.fit(X_train, y_train)
+
+# Step 5: Make Predictions
+y_pred = knn.predict(X_test)
+
+# Step 6: Evaluate the Model
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+conf_matrix = confusion_matrix(y_test, y_pred)
+
+# Print the results
+print(f"Accuracy: {accuracy}")
+print(f"Classification Report:\n{report}")
+print(f"Confusion Matrix:\n{conf_matrix}")
+
+# Plot the confusion matrix
+plt.figure(figsize=(10, 7))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=iris.target_names, yticklabels=iris.target_names)
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.title('Confusion Matrix')
+plt.show()
