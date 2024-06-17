@@ -1,0 +1,88 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import random
+
+class DroneEnvironment:
+    def __init__(self, grid_size, dynamic_obstacles):
+        self.grid_size = grid_size
+        self.dynamic_obstacles = dynamic_obstacles
+        self.state = None
+        self.goal = (grid_size - 1, grid_size - 1)
+        self.actions = ['up', 'down', 'left', 'right']
+
+    def reset(self):
+        self.state = (0, 0)
+        return self.state
+
+    def step(self, action):
+        x, y = self.state
+        if action == 'up':
+            x = max(0, x - 1)
+        elif action == 'down':
+            x = min(self.grid_size - 1, x + 1)
+        elif action == 'left':
+            y = max(0, y - 1)
+        elif action == 'right':
+            y = min(self.grid_size - 1, y + 1)
+
+        if (x, y) in self.dynamic_obstacles:
+            reward = -1
+        elif (x, y) == self.goal:
+            reward = 10
+        else:
+            reward = -0.1
+
+        self.state = (x, y)
+        done = (x, y) == self.goal
+
+        return self.state, reward, done
+
+    def render(self):
+        grid = np.zeros((self.grid_size, self.grid_size))
+        for obs in self.dynamic_obstacles:
+            grid[obs] = -1
+        grid[self.goal] = 2
+        x, y = self.state
+        grid[x, y] = 1
+
+        plt.imshow(grid, cmap='hot', interpolation='nearest')
+        plt.show()
+
+def dynamic_obstacle_strategy(grid_size):
+    return [(random.randint(0, grid_size - 1), random.randint(0, grid_size - 1)) for _ in range(5)]
+
+class QLearningAgent:
+    def __init__(self, state_size, action_size, learning_rate, discount_factor, exploration_rate):
+        self.state_size = state_size
+        self.action_size = action_size
+        self.learning_rate = learning_rate
+        self.discount_factor = discount_factor
+        self.exploration_rate = exploration_rate
+        self.q_table = np.zeros(state_size + (action_size,))
+
+    def choose_action(self, state):
+        if random.uniform(0, 1) < self.exploration_rate:
+            return random.randint(0, self.action_size - 1)
+        else:
+            return np.argmax(self.q_table[state])
+
+    def learn(self, state, action, reward, next_state):
+        predict = self.q_table[state + (action,)]
+        target = reward + self.discount_factor * np.max(self.q_table[next_state])
+        self.q_table[state + (action,)] += self.learning_rate * (target - predict)
+
+    def update_exploration_rate(self, decay_rate):
+        self.exploration_rate *= decay_rate
+
+# Parameters
+grid_size = 5
+num_episodes = 1000
+learning_rate = 0.1
+discount_factor = 0.9
+exploration_rate = 1.0
+exploration_decay = 0.99
+
+# Initialize environment and agent
+dynamic_obstacles = dynamic_obstacle_strategy(grid_size)
+env = DroneEnvironment(grid_size, dynamic_obstacles)
+agent = QLearningAgent((grid_size, grid_size),
