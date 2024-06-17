@@ -1,0 +1,43 @@
+import numpy as np
+import pandas as pd
+from pgmpy.models import BayesianNetwork
+from pgmpy.estimators import MaximumLikelihoodEstimator, BayesianEstimator
+from pgmpy.inference import VariableElimination
+
+# Example historical data
+data = pd.DataFrame(data={
+    'A': np.random.choice([0, 1], size=100),
+    'B': np.random.choice([0, 1], size=100),
+    'C': np.random.choice([0, 1], size=100),
+    'D': np.random.choice([0, 1], size=100),
+    'E': np.random.choice([0, 1], size=100)
+})
+
+# Define the structure of the Bayesian Network
+model = BayesianNetwork([('A', 'B'), ('A', 'C'), ('B', 'D'), ('C', 'D'), ('D', 'E')])
+
+# Train the model using Maximum Likelihood Estimation
+model.fit(data, estimator=MaximumLikelihoodEstimator)
+
+# New data observations
+new_data = pd.DataFrame(data={
+    'A': [1],
+    'B': [0],
+    'C': [1],
+    'D': [1],
+    'E': [0]
+})
+
+# Update the model with new data using Bayesian Estimation
+model.fit(new_data, estimator=BayesianEstimator, prior_type='BDeu', equivalent_sample_size=10)
+
+# Perform inference
+infer = VariableElimination(model)
+
+# Query the probability of a specific node given some evidence
+result = infer.query(variables=['E'], evidence={'A': 1, 'B': 0})
+print("Probability of E given A=1 and B=0:\n", result)
+
+# Query the most likely state of the network given some evidence
+result = infer.map_query(variables=['A', 'B', 'C', 'D', 'E'], evidence={'A': 1})
+print("Most likely state given A=1:\n", result)
