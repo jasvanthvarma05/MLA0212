@@ -1,0 +1,59 @@
+import numpy as np
+import pandas as pd
+from hmmlearn import hmm
+import matplotlib.pyplot as plt
+
+# Mocking a time series dataset
+np.random.seed(42)
+time_series_data = np.cumsum(np.random.randn(100, 1), axis=0)
+
+# Converting to a pandas DataFrame
+df = pd.DataFrame(time_series_data, columns=["Observations"])
+
+# Plot the time series data
+plt.plot(df)
+plt.title("Time Series Data")
+plt.xlabel("Time")
+plt.ylabel("Observations")
+plt.show()
+
+# Define the number of hidden states
+n_components = 3
+
+# Initialize the HMM
+model = hmm.GaussianHMM(n_components=n_components, covariance_type="diag", n_iter=1000)
+
+# Fit the HMM to the data
+model.fit(df)
+
+# Print the model parameters
+print("Transition matrix:\n", model.transmat_)
+print("Means and variances of each hidden state:\n")
+for i in range(n_components):
+    print(f"Hidden state {i}")
+    print("Mean = ", model.means_[i])
+    print("Variance = ", np.diag(model.covars_[i]))
+    print()
+
+# Predict the hidden states for the time series data
+hidden_states = model.predict(df)
+
+# Add hidden states to the DataFrame
+df["Hidden State"] = hidden_states
+
+# Plot the results
+plt.figure(figsize=(15, 6))
+for i in range(n_components):
+    state = (hidden_states == i)
+    plt.plot(df.index[state], df["Observations"][state], ".", label=f"Hidden State {i}", alpha=0.6)
+
+plt.plot(df.index, df["Observations"], "-", alpha=0.3)
+plt.title("Hidden States in Time Series Data")
+plt.xlabel("Time")
+plt.ylabel("Observations")
+plt.legend()
+plt.show()
+
+# Evaluate the model
+log_likelihood = model.score(df)
+print("Log Likelihood of the model: ", log_likelihood)
