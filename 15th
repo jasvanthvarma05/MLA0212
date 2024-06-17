@@ -1,0 +1,104 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import random
+
+class MarketEnvironment:
+    def __init__(self, num_prices, competitor_price_strategy):
+        self.num_prices = num_prices
+        self.competitor_price_strategy = competitor_price_strategy
+    
+    def reset(self):
+        return 0
+
+    def step(self, agent_price):
+        competitor_price = self.competitor_price_strategy()
+        reward = self.get_reward(agent_price, competitor_price)
+        state = 0  # Simplified
+        return state, reward, False, {}
+
+    def get_reward(self, agent_price, competitor_price):
+        if agent_price > competitor_price:
+            return -1
+        elif agent_price < competitor_price:
+            return 1
+        else:
+            return 0.5
+
+def competitor_strategy():
+    return random.randint(0, 10)
+
+class QLearningAgent:
+    def __init__(self, num_states, num_actions, learning_rate, discount_factor, exploration_rate):
+        self.num_states = num_states
+        self.num_actions = num_actions
+        self.learning_rate = learning_rate
+        self.discount_factor = discount_factor
+        self.exploration_rate = exploration_rate
+        self.q_table = np.zeros((num_states, num_actions))
+    
+    def choose_action(self, state):
+        if random.uniform(0, 1) < self.exploration_rate:
+            return random.randint(0, self.num_actions - 1)
+        else:
+            return np.argmax(self.q_table[state])
+    
+    def learn(self, state, action, reward, next_state):
+        predict = self.q_table[state, action]
+        target = reward + self.discount_factor * np.max(self.q_table[next_state])
+        self.q_table[state, action] += self.learning_rate * (target - predict)
+
+    def update_exploration_rate(self, decay_rate):
+        self.exploration_rate *= decay_rate
+
+# Parameters
+num_prices = 11
+num_episodes = 1000
+learning_rate = 0.1
+discount_factor = 0.9
+exploration_rate = 1.0
+exploration_decay = 0.99
+
+env = MarketEnvironment(num_prices, competitor_strategy)
+agent = QLearningAgent(1, num_prices, learning_rate, discount_factor, exploration_rate)
+
+# Training loop
+for episode in range(num_episodes):
+    state = env.reset()
+    done = False
+    total_reward = 0
+
+    while not done:
+        action = agent.choose_action(state)
+        next_state, reward, done, _ = env.step(action)
+        agent.learn(state, action, reward, next_state)
+        state = next_state
+        total_reward += reward
+
+    agent.update_exploration_rate(exploration_decay)
+    
+    if (episode + 1) % 100 == 0:
+        print(f"Episode {episode + 1}/{num_episodes}, Total Reward: {total_reward}")
+
+print("Training finished.")
+
+# Evaluate the trained agent
+state = env.reset()
+done = False
+total_reward = 0
+actions = []
+
+while not done:
+    action = agent.choose_action(state)
+    actions.append(action)
+    next_state, reward, done, _ = env.step(action)
+    state = next_state
+    total_reward += reward
+
+print("Evaluation finished. Total Reward:", total_reward)
+print("Actions taken by the agent:", actions)
+
+plt.plot(actions)
+plt.title("Agent Pricing Strategy Over Time")
+plt.xlabel("Time Step")
+plt.ylabel("Price")
+plt.show()
