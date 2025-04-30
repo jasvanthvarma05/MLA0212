@@ -1,0 +1,27 @@
+y = mx+b
+parrial derivative means d(x) means derivate wrt only x and keep y coeffients as 0.
+md(derivativeof m ) = -(2/n)*sum(x*(y-y_predicted)) # d/dm = 2/n(summation of) -xi(yi-(mxi+b)    n= len(x)
+bd(derivative of b) = -(2/n)*sum(y-y_predicted)  # d/db = 2/n(summation of) -(yi-(mxi+b)
+
+m = m - learning rate * md
+b = b- learning rate * bd
+
+
+cost function(mse) = (1/n)*sum[val**2 for val in (y-y_predicted]))   # 1/n(summation from i=1 to n )(yi-y_predicted)**2
+
+
+
+
+
+LOGISTIC REGRESSION
+
+The main difference between linear regression and logistic regression is Linear regression is continuous and the logistic regression is categorial 
+That means examples of linear regression are predicting weather, stock prices
+ but examples for logistic regression are, Are the emails spam or not? will customer buy insurance or not // that means YES or No type . This is called binary classification. But if the options are more than two it is called as multiclass classification.
+
+for linear regression y = mx+b
+for logistic regression y = 1/1+e**-(mx+b)  by using sigmoid function u wont get any straight it will visualize as a curve. 
+
+BINARY
+
+

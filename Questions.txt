@@ -1,0 +1,1108 @@
+1) Implement and demonstrate the Bayesian decision theory using a suitable python program . Consider yourself having a student dataset.csv containing marks and total with avg. 
+2) Through a naive bayes logic implement a program using python for credit score classification.
+3) Perform a classification module on iris dataset and represent the evaluation metrics on its classification using k nearest neighbour. 
+4) Write a program to demonstrate the working of decision tree using ID3 algorithm. Use an appropriate data for building the decision tree and classify the samples based on it.
+5) Build a artificial neural network by implementing backpropagation and test the same using appropriate dataset.
+6) Develop a car price prediction model using your own appropriate algorithm. 
+7) Write a python program to implement KNN and K mean clustering.
+8) Python program to implement Linear Regression.
+9) Implement Iris dataset using naive bayes.
+10) To predict sales for upcoming weeks.
+11) Write a program to implement logistic regression using python.
+12) Implement and evaluate the difference between polynomial regression linear regression and logistic regression and using a student mark dataset and plot the same in a graph.
+13) Develop a perceptron on for classifying prebuilt iris dataset.
+14) An autonomous drone company wants to optimize its flight path planning in dynamic environments. Develop a reinforcement learning algorithm to learn and adapt flight paths based on environmental changes and mission objectives.
+15) A retail company wants to optimize its pricing strategy in a competitive market environment. Develop a reinforcement learning algorithm to learn and adapt pricing strategies based on competitor actions and market trends.
+16) A telecommunications company wants to generalize from a Bayesian Network model to new network data. Implement generalization algorithms to generalize from the Bayesian Network model to new network data.
+17) A researcher wants to model the transitions between different states in a time series dataset. Implement a Hidden Markov Model using the time series data to model the state transitions.
+
+
+
+1)
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, classification_report
+
+# Step 1: Load the Dataset
+df = pd.read_csv('student_dataset.csv')
+
+# Step 2: Data Preprocessing
+X = df[['marks', 'total', 'avg']]  # Features
+y = df['pass']  # Target variable
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Step 3: Initialize the Model
+gnb = GaussianNB()
+
+# Step 4: Train the Model
+gnb.fit(X_train, y_train)
+
+# Step 5: Make Predictions
+y_pred = gnb.predict(X_test)
+
+# Step 6: Evaluate the Model
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+
+# Print the results
+print(f"Accuracy: {accuracy}")
+print(f"Classification Report:\n{report}")
+
+OUTPUT:
+
+Accuracy: 1.0
+Classification Report:
+              precision    recall  f1-score   support
+
+          no       1.00      1.00      1.00         1
+         yes       1.00      1.00      1.00         2
+
+    accuracy                           1.00         3
+   macro avg       1.00      1.00      1.00         3
+weighted avg       1.00      1.00      1.00         3
+
+
+2)________________________________________________________________________________________________________________________________________________
+
+2) Through a naive bayes logic implement a program using python for credit score classification.
+
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+# Create a synthetic dataset
+data = {
+    'age': np.random.randint(20, 70, 100),
+    'income': np.random.randint(20000, 100000, 100),
+    'loan_amount': np.random.randint(1000, 50000, 100),
+    'credit_score': np.random.choice(['good', 'average', 'bad'], 100)
+}
+
+# Convert to DataFrame
+df = pd.DataFrame(data)
+
+# Encode 'credit_score' as numerical
+df['credit_score'] = df['credit_score'].map({'good': 2, 'average': 1, 'bad': 0})
+
+# Save to CSV
+df.to_csv('credit_score_dataset.csv', index=False)
+
+# Step 1: Load the Dataset
+df = pd.read_csv('credit_score_dataset.csv')
+
+# Display the first few rows of the dataset
+print(df.head())
+
+# Step 2: Data Preprocessing
+# Handle missing values (if any)
+df = df.dropna()
+
+# Features and target variable
+X = df.drop('credit_score', axis=1)
+y = df['credit_score']
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Step 3: Initialize the Model
+gnb = GaussianNB()
+
+# Step 4: Train the Model
+gnb.fit(X_train, y_train)
+
+# Step 5: Make Predictions
+y_pred = gnb.predict(X_test)
+
+# Step 6: Evaluate the Model
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+conf_matrix = confusion_matrix(y_test, y_pred)
+
+# Print the results
+print(f"Accuracy: {accuracy}")
+print(f"Classification Report:\n{report}")
+print(f"Confusion Matrix:\n{conf_matrix}")
+
+
+OUTPUT:
+Accuracy: 0.3
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.29      0.50      0.36         6
+           1       0.33      0.29      0.31         7
+           2       0.25      0.10      0.14         7
+
+    accuracy                           0.30        20
+   macro avg       0.29      0.30      0.27        20
+weighted avg       0.29      0.30      0.27        20
+
+Confusion Matrix:
+[[3 3 0]
+ [3 2 2]
+ [4 2 1]]
+
+
+
+3)_______________________________________________________________________________________________________________________________________________________
+
+3) Perform a classification module on iris dataset and represent the evaluation metrics on its classification using k nearest neighbour. 
+
+
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Step 1: Load the Dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Step 2: Data Preprocessing
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Step 3: Initialize the Model
+knn = KNeighborsClassifier(n_neighbors=5)
+
+# Step 4: Train the Model
+knn.fit(X_train, y_train)
+
+# Step 5: Make Predictions
+y_pred = knn.predict(X_test)
+
+# Step 6: Evaluate the Model
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+conf_matrix = confusion_matrix(y_test, y_pred)
+
+# Print the results
+print(f"Accuracy: {accuracy}")
+print(f"Classification Report:\n{report}")
+print(f"Confusion Matrix:\n{conf_matrix}")
+
+# Plot the confusion matrix
+plt.figure(figsize=(10, 7))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=iris.target_names, yticklabels=iris.target_names)
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.title('Confusion Matrix')
+plt.show()
+
+
+4)__________________________________________________________________________________________________________________________________________________________
+
+4) Write a program to demonstrate the working of decision tree using ID3 algorithm. Use an appropriate data for building the decision tree and classify the samples based on it.
+
+
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.preprocessing import LabelEncoder
+
+# Step 1: Load and preprocess the dataset
+data = {
+    'Outlook': ['Sunny', 'Sunny', 'Overcast', 'Rain', 'Rain', 'Rain', 'Overcast', 'Sunny', 'Sunny', 'Rain', 'Sunny', 'Overcast', 'Overcast', 'Rain'],
+    'Temperature': ['Hot', 'Hot', 'Hot', 'Mild', 'Cool', 'Cool', 'Cool', 'Mild', 'Cool', 'Mild', 'Mild', 'Mild', 'Hot', 'Mild'],
+    'Humidity': ['High', 'High', 'High', 'High', 'Normal', 'Normal', 'Normal', 'High', 'Normal', 'Normal', 'Normal', 'High', 'Normal', 'High'],
+    'Wind': ['Weak', 'Strong', 'Weak', 'Weak', 'Weak', 'Strong', 'Strong', 'Weak', 'Weak', 'Weak', 'Strong', 'Strong', 'Weak', 'Strong'],
+    'PlayTennis': ['No', 'No', 'Yes', 'Yes', 'Yes', 'No', 'Yes', 'No', 'Yes', 'Yes', 'Yes', 'Yes', 'Yes', 'No']
+}
+
+df = pd.DataFrame(data)
+
+# Step 2: Encode categorical variables using LabelEncoder
+encoder = LabelEncoder()
+for column in df.columns:
+    df[column] = encoder.fit_transform(df[column])
+
+# Step 3: Split the dataset into training and testing sets
+X = df.drop('PlayTennis', axis=1)
+y = df['PlayTennis']
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Step 4: Train the Decision Tree using scikit-learn's DecisionTreeClassifier (simulates ID3 with entropy)
+clf = DecisionTreeClassifier(criterion='entropy')
+clf.fit(X_train, y_train)
+
+# Step 5: Make predictions on the test set
+y_pred = clf.predict(X_test)
+
+# Step 6: Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+report = classification_report(y_test, y_pred)
+conf_matrix = confusion_matrix(y_test, y_pred)
+
+# Step 7: Output results
+print(f"Accuracy: {accuracy}")
+print(f"Classification Report:\n{report}")
+print(f"Confusion Matrix:\n{conf_matrix}")
+
+
+5)_____________________________________________________________________________________________________________________________
+
+5) Build a artificial neural network by implementing backpropagation and test the same using appropriate dataset.
+
+
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+import numpy as np
+
+# Step 1: Load the Breast Cancer dataset
+cancer = load_breast_cancer()
+X = cancer.data
+y = cancer.target
+
+# Step 2: Preprocess the data
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+y = y.reshape(-1, 1)  # Convert to column vector for binary classification
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+
+# Step 3: Initialize the Neural Network parameters
+input_size = X_train.shape[1]
+hidden_size = 4
+output_size = 1
+learning_rate = 0.1
+epochs = 10000
+
+# Initialize weights and biases
+W1 = np.random.randn(input_size, hidden_size)
+b1 = np.zeros((1, hidden_size))
+W2 = np.random.randn(hidden_size, output_size)
+b2 = np.zeros((1, output_size))
+
+# Sigmoid activation function and its derivative
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def sigmoid_derivative(x):
+    return x * (1 - x)
+
+# Step 4: Train the Neural Network
+for epoch in range(epochs):
+    # Forward Propagation
+    z1 = np.dot(X_train, W1) + b1
+    a1 = sigmoid(z1)
+    z2 = np.dot(a1, W2) + b2
+    a2 = sigmoid(z2)
+    
+    # Calculate the error
+    error = y_train - a2
+    d_output = error * sigmoid_derivative(a2)
+    
+    # Backward Propagation
+    error_hidden = d_output.dot(W2.T)
+    d_hidden = error_hidden * sigmoid_derivative(a1)
+    
+    # Update weights and biases
+    W2 += a1.T.dot(d_output) * learning_rate
+    b2 += np.sum(d_output, axis=0, keepdims=True) * learning_rate
+    W1 += X_train.T.dot(d_hidden) * learning_rate
+    b1 += np.sum(d_hidden, axis=0) * learning_rate
+
+# Step 5: Test the Neural Network
+# Forward pass on the test set
+z1 = np.dot(X_test, W1) + b1
+a1 = sigmoid(z1)
+z2 = np.dot(a1, W2) + b2
+a2 = sigmoid(z2)
+
+# Convert probabilities to binary predictions
+predictions = np.round(a2)
+
+# Calculate accuracy
+accuracy = np.mean(predictions == y_test)
+print(f"Accuracy: {accuracy}")
+
+OUTPUT :
+accuracy : 0.9473684210526315
+									or
+
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import accuracy_score, classification_report
+
+# Step 1: Load dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Step 2: Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Step 3: Initialize and train MLP (ANN)
+model = MLPClassifier(hidden_layer_sizes=(10,), activation='relu', max_iter=1000, random_state=42)
+model.fit(X_train, y_train)
+
+# Step 4: Make predictions
+y_pred = model.predict(X_test)
+
+# Step 5: Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.2f}")
+print("Classification Report:\n", classification_report(y_test, y_pred))
+
+
+
+6)__________________________________________________________________________________________________________________________________________________________
+
+6) Develop a car price prediction model using your own appropriate algorithm. 
+
+
+# Step 1: Import Required Libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Step 2: Load Dataset
+df = pd.read_csv("CarPrice_Assignment.csv")
+
+# Step 3: Data Preprocessing
+df = df.drop(['car_ID', 'CarName'], axis=1)
+df = pd.get_dummies(df, drop_first=True)
+
+# Step 4: Define Features and Target Variable
+X = df.drop('price', axis=1)
+y = df['price']
+
+# Step 5: Split the Dataset
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Step 6: Train the Model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Step 7: Predict Car Prices
+y_pred = model.predict(X_test)
+
+# Step 8: Evaluate the Model
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print("🎯 Car Price Prediction Results 🎯")
+print(f"Mean Squared Error (MSE): {mse:.2f}")
+print(f"R-squared Score (R2): {r2:.2f}")
+
+# Step 9: Show Predicted Prices Alongside Actual Prices
+results = pd.DataFrame({
+    'Actual Price': y_test.values,
+    'Predicted Price': y_pred
+})
+
+print("\nSample Predictions:")
+print(results.head(10))
+
+OUTPUT:
+
+   year  mileage   brand   model fuel_type  price
+0  2004    66695    Ford  Model5    Diesel  42052
+1  2006    59147     BMW  Model3    Petrol  15948
+2  2018   143983    Audi  Model1    Hybrid  14685
+3  2007   114301     BMW  Model1    Petrol  20308
+4  2020   125477  Toyota  Model4    Hybrid  15589
+Mean Squared Error: 169799169.3880283
+R-squared: -0.039894651393503455
+     Actual     Predicted
+521   17828  29943.246262
+737   24038  26728.408111
+740   32828  26042.909767
+660   25107  27060.381268
+411   23863  28315.174510
+
+
+
+7) _________________________________________________________________________________________________________________________________________
+
+7) Write a python program to implement KNN and K mean clustering.
+
+1.  # Step 1: Import Required Libraries
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+# Step 2: Load Dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Step 3: Preprocessing
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Step 4: Split the Dataset
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+
+# Step 5: Train the KNN Classifier
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+
+# Step 6: Make Predictions
+y_pred = knn.predict(X_test)
+
+# Step 7: Evaluate the Model
+print("🎯 K-Nearest Neighbors (KNN) Classification Results 🎯")
+print(f"Accuracy: {accuracy_score(y_test, y_pred):.2f}")
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+
+
+2. # Step 1: Import Required Libraries
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+
+# Step 2: Load Dataset (use X from Iris data, without using labels y)
+# (X_scaled is already prepared from previous step)
+
+# Step 3: Apply K-Means Clustering
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+kmeans.fit(X_scaled)
+
+# Step 4: Analyze Clustering
+print("\n🎯 K-Means Clustering Results 🎯")
+print(f"Cluster Centers:\n{kmeans.cluster_centers_}")
+print(f"Labels Assigned to Each Data Point:\n{kmeans.labels_}")
+
+# Step 5: Visualize Clusters (2D Projection)
+plt.figure(figsize=(8,6))
+plt.scatter(X_scaled[:, 0], X_scaled[:, 1], c=kmeans.labels_, cmap='viridis')
+plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=300, c='red', marker='X', label='Centroids')
+plt.title('K-Means Clustering of Iris Data')
+plt.xlabel('Feature 1')
+plt.ylabel('Feature 2')
+plt.legend()
+plt.show()
+
+
+
+8)________________________________________________________________________________________________________________________________________________
+
+8) Python program to implement Linear Regression.
+
+# Linear Regression Example
+
+import pandas as pd
+from sklearn.datasets import fetch_california_housing
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Load Dataset
+data = fetch_california_housing()
+X = pd.DataFrame(data.data, columns=data.feature_names)
+y = pd.Series(data.target)
+
+# Train-Test Split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Linear Regression Model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Prediction
+y_pred = model.predict(X_test)
+
+# Evaluation
+print("🎯 Linear Regression Results 🎯")
+print(f"R² Score: {r2_score(y_test, y_pred):.2f}")
+print(f"Mean Squared Error: {mean_squared_error(y_test, y_pred):.2f}")
+
+
+OUTPUT:
+
+    Feature    Target
+0  0.749080  6.334288
+1  1.901429  9.405278
+2  1.463988  8.483724
+3  1.197317  5.604382
+4  0.312037  4.716440
+Mean Squared Error: 0.6536995137170021
+R-squared: 0.8072059636181392
+
+9)_____________________________________________________________________________________________________________________________________________________
+
+9) Implement Iris dataset using naive bayes.
+
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load the Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Convert to DataFrame for easier handling
+df = pd.DataFrame(data=X, columns=iris.feature_names)
+df['target'] = y
+
+# Inspect the dataset
+print(df.head())
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train the Naive Bayes model
+nb = GaussianNB()
+nb.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = nb.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+conf_matrix = confusion_matrix(y_test, y_pred)
+class_report = classification_report(y_test, y_pred)
+
+print(f'Accuracy: {accuracy}')
+print('Confusion Matrix:')
+print(conf_matrix)
+print('Classification Report:')
+print(class_report)
+
+# Visualize the confusion matrix
+plt.figure(figsize=(10, 7))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=iris.target_names, yticklabels=iris.target_names)
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix')
+plt.show()
+
+10)________________________________________________________________________________________________________________________________________________
+
+10) To predict sales for upcoming weeks.
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.pyplot as plt
+
+# Generate a synthetic dataset
+np.random.seed(42)
+weeks = np.arange(1, 101)  # 100 weeks
+sales = 50 + 2 * weeks + np.random.randn(100) * 10  # Linear trend with some noise
+
+# Create a DataFrame
+data = pd.DataFrame({'Week': weeks, 'Sales': sales})
+
+# Inspect the dataset
+print(data.head())
+
+# Feature and target variable
+X = data[['Week']]
+y = data['Sales']
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train the Linear Regression model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = model.predict(X_test)
+
+# Evaluate the model
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print(f'Mean Squared Error: {mse}')
+print(f'R-squared: {r2}')
+
+# Predict sales for the upcoming weeks
+future_weeks = np.arange(101, 121).reshape(-1, 1)  # Next 20 weeks
+future_sales_pred = model.predict(future_weeks)
+
+# Visualize the results
+plt.figure(figsize=(10, 6))
+plt.scatter(X, y, color='blue', label='Actual Sales')
+plt.plot(X_test, y_pred, color='red', linewidth=2, label='Predicted Sales')
+plt.plot(future_weeks, future_sales_pred, color='green', linewidth=2, linestyle='dashed', label='Future Sales Prediction')
+plt.xlabel('Week')
+plt.ylabel('Sales')
+plt.title('Sales Prediction')
+plt.legend()
+plt.show()
+
+# Display future sales predictions
+future_sales = pd.DataFrame({'Week': future_weeks.flatten(), 'Predicted Sales': future_sales_pred})
+print(future_sales)
+
+OUTPUT:
+
+"""
+   Week      Sales
+0     1  56.967142
+1     2  52.617357
+2     3  62.476885
+3     4  73.230299
+4     5  57.658466
+Mean Squared Error: 62.2042242290179
+R-squared: 0.9814382585609467
+"""
+
+
+11)____________________________________________________________________________________________________________________________________________________
+
+ Write a program to implement logistic regression using python.
+
+# Logistic Regression Example
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, classification_report
+
+# Create sample data
+data = {
+    'Marks': [30, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90],
+    'Admitted': [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1]
+}
+df = pd.DataFrame(data)
+
+# Feature and Target
+X = df[['Marks']]
+y = df['Admitted']
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Logistic Regression Model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Predict
+y_pred = model.predict(X_test)
+
+# Evaluation
+print("🎯 Logistic Regression Results 🎯")
+print(f"Accuracy: {accuracy_score(y_test, y_pred):.2f}")
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+# Plotting
+plt.scatter(X, y, color='blue')
+plt.plot(X, model.predict_proba(X)[:,1], color='red') # probability curve
+plt.title('Logistic Regression - Admission vs Marks')
+plt.xlabel('Marks')
+plt.ylabel('Probability of Admission')
+plt.grid(True)
+plt.show()
+
+
+OUTPUT :
+
+
+Accuracy: 1.0
+Confusion Matrix:
+[[12  0]
+ [ 0  8]]
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00        12
+           1       1.00      1.00      1.00         8
+
+    accuracy                           1.00        20
+   macro avg       1.00      1.00      1.00        20
+weighted avg       1.00      1.00      1.00        20
+
+12)_______________________________________________________________________________________________________________________________________________
+
+12) Implement and evaluate the difference between polynomial regression linear regression and logistic regression and using a student mark dataset and plot the same in a graph.
+
+# Comparing Linear, Polynomial, and Logistic Regression
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.pipeline import make_pipeline
+
+# Sample Student Marks Dataset
+data = {
+    'Marks': [10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+    'Score': [5, 15, 25, 35, 50, 65, 70, 85, 90, 95],     # Continuous Score
+    'Pass_Fail': [0, 0, 0, 0, 1, 1, 1, 1, 1, 1]            # Binary Pass/Fail
+}
+df = pd.DataFrame(data)
+
+X = df[['Marks']]
+y_linear = df['Score']          # For Regression
+y_logistic = df['Pass_Fail']     # For Classification
+
+# Linear Regression
+linear_model = LinearRegression()
+linear_model.fit(X, y_linear)
+
+# Polynomial Regression (degree = 2)
+poly_model = make_pipeline(PolynomialFeatures(degree=2), LinearRegression())
+poly_model.fit(X, y_linear)
+
+# Logistic Regression
+logistic_model = LogisticRegression()
+logistic_model.fit(X, y_logistic)
+
+# Plotting
+marks_range = np.linspace(0, 110, 300).reshape(-1, 1)
+
+plt.figure(figsize=(10,6))
+
+# Scatter plots
+plt.scatter(X, y_linear, color='blue', label='Actual Scores')
+
+# Linear Prediction
+plt.plot(marks_range, linear_model.predict(marks_range), color='green', label='Linear Regression')
+
+# Polynomial Prediction
+plt.plot(marks_range, poly_model.predict(marks_range), color='purple', label='Polynomial Regression (Degree 2)')
+
+# Logistic Prediction
+plt.plot(marks_range, logistic_model.predict_proba(marks_range)[:,1], color='red', label='Logistic Regression (Pass Probability)')
+
+plt.title('Comparison: Linear, Polynomial, and Logistic Regression')
+plt.xlabel('Marks')
+plt.ylabel('Score / Pass Probability')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
+"""
+   Hours_Studied      Marks  Pass
+0              7  18.153690     0
+1              4   9.837762     0
+2              8  20.935590     0
+3              5  13.972245     0
+4              7  15.940596     0
+"""
+
+13)___________________________________________________________________________________________________________________________________________
+
+13) Develop a perceptron on for classifying prebuilt iris dataset.
+
+import numpy as np
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import Perceptron
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load the Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Standardize the features
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Train the Perceptron model
+perceptron = Perceptron(max_iter=1000, tol=1e-3, random_state=42)
+perceptron.fit(X_train, y_train)
+
+# Predict on the test set
+y_pred = perceptron.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+conf_matrix = confusion_matrix(y_test, y_pred)
+class_report = classification_report(y_test, y_pred)
+
+print(f'Accuracy: {accuracy}')
+print('Confusion Matrix:')
+print(conf_matrix)
+print('Classification Report:')
+print(class_report)
+
+# Visualize the confusion matrix
+plt.figure(figsize=(10, 7))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=iris.target_names, yticklabels=iris.target_names)
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix')
+plt.show()
+
+14)__________________________________________________________________________________________________________________________________________________
+
+14) An autonomous drone company wants to optimize its flight path planning in dynamic environments. Develop a reinforcement learning algorithm to learn and adapt flight paths based on environmental changes and mission objectives.
+
+import numpy as np
+import matplotlib.pyplot as plt
+import random
+
+# Define the environment
+class DroneEnv:
+    def __init__(self, grid_size, obstacles, start, goal):
+        self.grid_size = grid_size
+        self.obstacles = obstacles
+        self.start = start
+        self.goal = goal
+        self.state = start
+
+    def reset(self):
+        self.state = self.start
+        return self.state
+
+    def step(self, action):
+        x, y = self.state
+
+        if action == 0:  # up
+            x -= 1
+        elif action == 1:  # down
+            x += 1
+        elif action == 2:  # left
+            y -= 1
+        elif action == 3:  # right
+            y += 1
+
+        next_state = (x, y)
+
+        if (x < 0 or x >= self.grid_size or y < 0 or y >= self.grid_size or next_state in self.obstacles):
+            reward = -1
+            next_state = self.state  # reset to previous state if hit obstacle or out of bounds
+        elif next_state == self.goal:
+            reward = 10
+        else:
+            reward = -0.1  # small negative reward for each step to encourage efficiency
+
+        self.state = next_state
+        return next_state, reward, next_state == self.goal
+
+    def render(self):
+        grid = np.zeros((self.grid_size, self.grid_size))
+        for obs in self.obstacles:
+            grid[obs] = -1
+        grid[self.goal] = 1
+        grid[self.state] = 0.5
+        print(grid)
+
+# Initialize Q-Learning agent
+class QLearningAgent:
+    def __init__(self, env, learning_rate=0.1, discount_factor=0.99, exploration_rate=1.0, exploration_decay=0.995):
+        self.env = env
+        self.q_table = np.zeros((env.grid_size, env.grid_size, 4))
+        self.learning_rate = learning_rate
+        self.discount_factor = discount_factor
+        self.exploration_rate = exploration_rate
+        self.exploration_decay = exploration_decay
+
+    def choose_action(self, state):
+        if random.uniform(0, 1) < self.exploration_rate:
+            return random.randint(0, 3)
+        else:
+            x, y = state
+            return np.argmax(self.q_table[x, y])
+
+    def learn(self, state, action, reward, next_state):
+        x, y = state
+        next_x, next_y = next_state
+        best_next_action = np.argmax(self.q_table[next_x, next_y])
+        td_target = reward + self.discount_factor * self.q_table[next_x, next_y, best_next_action]
+        td_error = td_target - self.q_table[x, y, action]
+        self.q_table[x, y, action] += self.learning_rate * td_error
+
+    def train(self, episodes=1000):
+        for episode in range(episodes):
+            state = self.env.reset()
+            done = False
+            while not done:
+                action = self.choose_action(state)
+                next_state, reward, done = self.env.step(action)
+                self.learn(state, action, reward, next_state)
+                state = next_state
+            self.exploration_rate *= self.exploration_decay
+
+# Set up the environment
+grid_size = 5
+obstacles = [(1, 1), (1, 2), (1, 3), (3, 1), (3, 2), (3, 3)]
+start = (0, 0)
+goal = (4, 4)
+env = DroneEnv(grid_size, obstacles, start, goal)
+
+# Train the Q-Learning agent
+agent = QLearningAgent(env)
+agent.train(episodes=500)
+
+# Evaluate the agent
+state = env.reset()
+env.render()
+done = False
+while not done:
+    action = agent.choose_action(state)
+    next_state, reward, done = env.step(action)
+    env.render()
+    state = next_state
+
+print("Training complete.")
+
+
+OUTPUT:
+
+[[ 0.5  0.   0.   0.   0. ]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.   0.   0.   0.   0. ]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.   0.   0.   0.   1. ]]
+[[ 0.   0.   0.   0.   0. ]
+ [ 0.5 -1.  -1.  -1.   0. ]
+ [ 0.   0.   0.   0.   0. ]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.   0.   0.   0.   1. ]]
+[[ 0.   0.   0.   0.   0. ]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.5  0.   0.   0.   0. ]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.   0.   0.   0.   1. ]]
+[[ 0.   0.   0.   0.   0. ]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.   0.   0.   0.   0. ]
+ [ 0.5 -1.  -1.  -1.   0. ]
+ [ 0.   0.   0.   0.   1. ]]
+[[ 0.   0.   0.   0.   0. ]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.5  0.   0.   0.   0. ]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.   0.   0.   0.   1. ]]
+[[ 0.   0.   0.   0.   0. ]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.   0.5  0.   0.   0. ]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.   0.   0.   0.   1. ]]
+[[ 0.   0.   0.   0.   0. ]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.   0.   0.5  0.   0. ]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.   0.   0.   0.   1. ]]
+[[ 0.   0.   0.   0.   0. ]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.   0.   0.   0.5  0. ]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.   0.   0.   0.   1. ]]
+[[ 0.   0.   0.   0.   0. ]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.   0.   0.   0.   0.5]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.   0.   0.   0.   1. ]]
+[[ 0.   0.   0.   0.   0. ]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.   0.   0.   0.   0. ]
+ [ 0.  -1.  -1.  -1.   0.5]
+ [ 0.   0.   0.   0.   1. ]]
+[[ 0.   0.   0.   0.   0. ]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.   0.   0.   0.   0. ]
+ [ 0.  -1.  -1.  -1.   0. ]
+ [ 0.   0.   0.   0.   0.5]]
+Training complete.
+
+
+15)__________________________________________________________________________________________________________________________________________________________________________________________
+
+✅ 15) Reinforcement Learning for Pricing Strategy
+
+prices = [10, 20, 30]  # Pricing options
+q_table = np.zeros((len(prices), len(prices)))  # state=competitor price, action=our price
+alpha, gamma, epsilon = 0.9, 0.8, 0.1
+
+# Reward = (our_price - cost) * demand (inversely proportional to price gap)
+for episode in range(500):
+    competitor_price = random.choice(prices)
+    state = prices.index(competitor_price)
+
+    if random.uniform(0, 1) < epsilon:
+        action = random.randint(0, len(prices)-1)
+    else:
+        action = np.argmax(q_table[state])
+
+    our_price = prices[action]
+    demand = max(0, 100 - abs(our_price - competitor_price) * 10)
+    reward = (our_price - 5) * demand  # Assume cost = 5
+
+    q_table[state, action] += alpha * (reward + gamma * np.max(q_table[state]) - q_table[state, action])
+
+# Print best pricing strategy
+best_actions = [prices[np.argmax(q_table[i])] for i in range(len(prices))]
+print("Best price based on competitor's price:", dict(zip(prices, best_actions)))
+
+____________________________________________________________________________________________________________________________________________________
+
+16) ✅ 16) Generalizing Bayesian Network to New Data
+
+
+from pgmpy.models import BayesianNetwork
+from pgmpy.estimators import MaximumLikelihoodEstimator
+from pgmpy.inference import VariableElimination
+import pandas as pd
+
+# Simulated telecom dataset
+data = pd.DataFrame(data={
+    'NetworkLoad': ['Low', 'High', 'Low', 'High'],
+    'Failure': ['No', 'Yes', 'No', 'Yes']
+})
+
+# Model definition
+model = BayesianNetwork([('NetworkLoad', 'Failure')])
+model.fit(data, estimator=MaximumLikelihoodEstimator)
+
+# Inference
+inference = VariableElimination(model)
+q = inference.query(variables=['Failure'], evidence={'NetworkLoad': 'High'})
+print(q)
+
+_______________________________________________________________________________________________________________________________________________
+
+✅ 17) Hidden Markov Model for Time Series State Transitions
+
+
+import numpy as np
+from hmmlearn import hmm
+
+# Simulated time series observations (e.g., user activity levels)
+observations = np.array([[0], [1], [2], [1], [0], [2], [1], [0]])
+model = hmm.MultinomialHMM(n_components=3, n_iter=100)
+model.fit(observations)
+
+# Predict hidden states
+logprob, hidden_states = model.decode(observations)
+print("Hidden States:", hidden_states)
+
+# Transition probabilities
+print("Transition Matrix:\n", model.transmat_)

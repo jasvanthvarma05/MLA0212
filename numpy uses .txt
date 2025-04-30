@@ -1,0 +1,14 @@
+numpy uses 
+
+sorting searching operations linear algebra 
+matrix 
+stack
+arrays
+
+
+pandas
+
+analyzing cleaning exploring manupilating data
+concentating of 2 or more series is called dataframe.
+
+

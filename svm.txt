@@ -1,0 +1,25 @@
+ENTROPY : MEASURE OF THE RANDOMNESS.
+
+Use labelencoder 
+
+form sklearn import tree
+model=tree.DecidionTreeClassifier()
+
+
+SVM
+It draws a hyperplane in n dimensional space such that it maximizes margin between classification groups.
+
+K fold cross validation specifies which model is suitable for which one. 
+s1 : Use all available data for training and test on same dataset.
+s2: Split available dataset into training and testing sets.
+If you take example of any dataset to predict. Train and test the data . measure score by using any models . It shows different scores for all models . if we again train and test again we will get different scores.
+So sklearn.model_selection  import KFold
+kf = KFold(n_splits=3)
+
+from sklearn.model_selection import cross_val_score
+cross_val_score(LogisticRegression(),digits.data,digits.target)
+gives three scores
+
+
+
+
